@@ -1,0 +1,6 @@
+# .gitignore
+.settings/
+bin/
+target/
+
+
