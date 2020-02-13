@@ -1,1 +1,2 @@
 http\://www.crossbridge.com/schema/bridge=com.crossbridge.kernel.spring.BridgeNamespaceHandler
+# http\://www.crossbridge.com/schema/tags=com.crossbridge.kernel.spring.TagsNamespaceHandler
