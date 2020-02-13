@@ -6,24 +6,12 @@
 	<artifactId>com.crossbridge.kernel.ext</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>src/main/resources/</directory>
+			</testResource>
+		</testResources>
 
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>META-INF</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-				<targetPath>META-INF</targetPath>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -75,8 +63,6 @@
 			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-		
 
 	</dependencies>
 	<properties>
