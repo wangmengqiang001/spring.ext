@@ -9,4 +9,5 @@ CustomizeWebApplicationContext 注册新schema 和namespace resolver
 
 3. 增加对BeanPostProcessor的自定义扩展
 
+4. 自定义annotation, 并增加自定义的注解解析
 
