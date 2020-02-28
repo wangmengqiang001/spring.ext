@@ -13,5 +13,17 @@ public @interface ContextServices {
 	public String name() default "provider";
 	public int level() ;
 	
+	String id() default "" ;
+	
+	String beanId() default "";
+	
+	String targetName() default "";
+	
+	String ranking() default "";
+	
+	String includeBundle() default "";
+	
+	String excludeBundle() default "";
+	
 
 }

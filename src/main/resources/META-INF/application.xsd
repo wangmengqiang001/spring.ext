@@ -16,4 +16,8 @@
         <xsd:attribute name="organization" type="xsd:string"/>
     </xsd:complexType>  
    
+   	<xsd:element name="contextservice-scan" type="contextServiceType" />
+    <xsd:complexType name="contextServiceType">        
+        <xsd:attribute name="base-package" type="xsd:string" use="required"/>        
+    </xsd:complexType>  
 </xsd:schema>

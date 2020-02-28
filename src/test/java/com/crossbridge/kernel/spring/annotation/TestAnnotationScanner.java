@@ -32,7 +32,7 @@ class TestAnnotationScanner {
 	        ExtendedAnnotationScanner scanner = new ExtendedAnnotationScanner(context,ContextServices.class);
 	        
 	       // scanner.set
-	        Set<BeanDefinitionHolder> setBeansH =scanner.doScan(BASE_PACKAGE);
+	        Set<BeanDefinition> setBeansH =scanner.scanCandidates(BASE_PACKAGE);
 	        
 	        assertEquals(1,setBeansH.size());
 	        
