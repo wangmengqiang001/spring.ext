@@ -9,4 +9,6 @@ CustomizeWebApplicationContext 注册新schema 和namespace resolver
 
 3. 增加对BeanPostProcessor的自定义扩展
 
+4. 自定义annotation, 并增加自定义的注解解析
+通过标签设置要扫描的base-package, 不是对全包扫描，且是通过annotationscanner的处理方式，为扫描到的bean增加了annotation 类型的holder.
 

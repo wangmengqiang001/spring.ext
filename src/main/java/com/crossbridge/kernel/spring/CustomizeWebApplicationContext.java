@@ -51,6 +51,9 @@ public class CustomizeWebApplicationContext extends AbstractXmlApplicationContex
 		
 		initBeanDefinitionReader(beanDefinitionReader);
 		loadBeanDefinitions(beanDefinitionReader);
+		
+		//scan the packages
+		
 
 	}
 	
