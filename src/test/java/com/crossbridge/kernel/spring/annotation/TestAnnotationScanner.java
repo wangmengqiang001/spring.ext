@@ -66,10 +66,7 @@ class TestAnnotationScanner {
 		GenericApplicationContext context = new GenericApplicationContext();
 
 		ExtendedAnnotationScanner scanner = new ExtendedAnnotationScanner(context,ContextServices.class);
-		//   ExtendedAnnotationScanner myClassPathDefinitonScanner = new ExtendedAnnotationScanner(context, ContextServices.class);
-		// 注册过滤器
-		//scanner.registerTypeFilter();
-		//int beanCount = myClassPathDefinitonScanner.scan(BASE_PACKAGE);
+
 
 		Set<BeanDefinition> setBeans = scanner.findCandidateComponents(BASE_PACKAGE);
 
@@ -81,13 +78,7 @@ class TestAnnotationScanner {
 		assertEquals("com.crossbridge.kernel.spring.annotation.TeacherServiceSecond",bean.getBeanClassName());
 
 		context.refresh();
-		// String[] beanDefinitionNames = context.getBeanDefinitionNames();
-
-		// System.out.println(beanCount);
-		//	        for (String beanDefinitionName : beanDefinitionNames) {
-		//	            System.out.println(beanDefinitionName);
-		//	        }
-
+	
 
 		try {
 			BeanDefinition y = context.getBeanDefinition("teacherServiceSecond");
@@ -99,11 +90,6 @@ class TestAnnotationScanner {
 		}
 
 
-
-		//	        for(BeanDefinitionHolder b:setBeans) {
-		//	        	System.out.println("bean:" + b);
-		//	        	System.out.println("define:"+b.getBeanDefinition());
-		//	        }
 	}
 	/******************************************************************************
 	 * 测试增加了扫描base-package的处理后对指定的路径下扫描 ContextService 注解

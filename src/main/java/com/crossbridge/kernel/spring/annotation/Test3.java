@@ -2,7 +2,7 @@ package com.crossbridge.kernel.spring.annotation;
 
 @Person(name="xingoo",age=25)
 public class Test3 {
-	@ModuleReference(filter = "abc", id = "", targetName = "com.crossbridge.kernel.spring.annotation.ContextServiceScannerParser")
+	@ModuleReference(filter = "abc", id = "test3.abc", targetName = "com.crossbridge.kernel.spring.annotation.ContextServiceScannerParser")
 	public String msg;
 	 public void print(Class c){
 		 System.out.println(c.getName());

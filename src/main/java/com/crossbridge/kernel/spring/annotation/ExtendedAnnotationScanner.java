@@ -22,7 +22,9 @@ import org.springframework.context.annotation.ScopeMetadata;
 import org.springframework.context.annotation.ScopeMetadataResolver;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -35,6 +37,7 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 	private final String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 	private Class<? extends Annotation> typeFiltered = null;
 	
+	private MetadataReaderFactory metadataReaderFactory = null;
 	
 	
 	public ExtendedAnnotationScanner(BeanDefinitionRegistry registry,Class<? extends Annotation> type) {
@@ -57,6 +60,18 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 		return beanDefinitions;
 	}
 	
+	public Set<ModuleReference>  scanReferenceAnnotations(String... basePackages) {
+//		// TODO Auto-generated method stub
+		//return super.doScan(basePackages);
+		Assert.notEmpty(basePackages, "At least one base package must be specified");
+		Set<ModuleReference> beanDefinitions = new LinkedHashSet<ModuleReference>();
+		for (String basePackage : basePackages) {
+			Set<ModuleReference> candidates = findReferenceAnnotations(basePackage);
+			beanDefinitions.addAll(candidates);
+		
+		}
+		return beanDefinitions;
+	}
 	/**
 	 * Scan the class path for candidate components.
 	 * @param basePackage the package to check for annotated classes
@@ -82,7 +97,9 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 					try {
 						
 						MetadataReader reader = this.getMetadataReader(resource);
+						Assert.notNull(reader);
 						String className = reader.getClassMetadata().getClassName();
+						
 						Class<?> bundleclass = this.getResourceLoader().getClassLoader().loadClass(className);
 						
 						
@@ -146,9 +163,14 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 	
 
 
-	private MetadataReader getMetadataReader(Resource resource) {
-		// TODO Auto-generated method stub
-		return null;
+	private MetadataReader getMetadataReader(Resource resource) throws IOException {
+		
+		if( metadataReaderFactory == null) {
+			this.metadataReaderFactory = new CachingMetadataReaderFactory(this.getResourceLoader());
+			
+			
+		}
+		return this.metadataReaderFactory.getMetadataReader(resource);
 	}
 
 
