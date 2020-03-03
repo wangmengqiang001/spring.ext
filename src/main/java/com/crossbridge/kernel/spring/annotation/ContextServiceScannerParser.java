@@ -2,6 +2,7 @@ package com.crossbridge.kernel.spring.annotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.springframework.beans.annotation.AnnotationBeanUtils;
@@ -16,10 +17,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 import com.crossbridge.kernel.spring.ContextServiceHolder;
+import com.crossbridge.kernel.spring.ModuleReferenceHolder;
 
 
 
@@ -48,9 +51,44 @@ public class ContextServiceScannerParser implements BeanDefinitionParser {
     	ExtendedAnnotationScanner scanner = configureScanner(parserContext, element);
 		Set<BeanDefinition> beanDefinitions = scanner.scanCandidates(basePackages);
 		registerBeanDefinitions(parserContext.getReaderContext(), beanDefinitions);
+		
+		//fieldAnnotations = scanner.findReferenceAnnotations(basePackages);
+		Set<ModuleReference> moduleRefs = scanner.scanReferenceAnnotations(basePackages);
+		
+		registerReferenceBeanDefinitions(parserContext.getReaderContext(),moduleRefs);
 
 		return null;
 		
+		
+	}
+
+	private void registerReferenceBeanDefinitions(XmlReaderContext readerContext, Set<ModuleReference> moduleRefs) {
+		for(ModuleReference ref: moduleRefs) {
+			registerReference(readerContext.getRegistry(),ref);
+		}
+		
+	}
+
+	private void registerReference(BeanDefinitionRegistry registry, ModuleReference ref) {
+		Assert.notNull(ref);
+		
+		if(registry.containsBeanDefinition(ref.id())) {
+			return; //avoid registry the same bean
+		}
+		
+		AbstractBeanDefinition refBeanDef = new RootBeanDefinition();
+		
+		refBeanDef.getPropertyValues().add("id",ref.id());
+		refBeanDef.getPropertyValues().add("filter",ref.filter());
+		
+		refBeanDef.getPropertyValues().add("targetName",ref.targetName());
+		refBeanDef.getPropertyValues().add("minOccurs",ref.minOccurs());
+		refBeanDef.getPropertyValues().add("remoteAddresses",new String[]{ref.remoteAddress()});
+		refBeanDef.getPropertyValues().add("finder",ref.finder());
+				
+		refBeanDef.setBeanClass(ModuleReferenceHolder.class);
+		
+		registry.registerBeanDefinition(ref.id(),refBeanDef);
 		
 	}
 
