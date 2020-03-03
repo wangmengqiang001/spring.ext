@@ -23,33 +23,11 @@ class TestContextServiceScannerParser {
 	void tearDown() throws Exception {
 	}
 
-	@Test
-	void test() {
-		CustomizeWebApplicationContext applicationContext = new
-				CustomizeWebApplicationContext("classpath:beans.xml");
-		
-		//applicationContext.getResource("classpath:beans.xml");
-		
-
-		String[] names = applicationContext.getBeanDefinitionNames();
-		
-		for(String n:names) {
-			System.out.println("bean defined: " + n);
-			Object be = applicationContext.getBean(n);
-			
-			System.out.println("Bean Object = "+be);
-			
-		}
-		
-		ContextServiceHolder bean = (ContextServiceHolder)
-				applicationContext.getBean("serviceHolder");
-		
-		System.out.println("ContextServiceHolder = "+bean);
-		assertEquals("teacherProvider",
-				bean.getName());
-		
-	}
 	
+	/*
+	 * 测试通过扫描类的field, 找到带有指定的annotation field, 把annotation 带回
+	 * 
+	 */
 	@Test
 	void testReference() throws ClassNotFoundException {
 		String clsName="com.crossbridge.kernel.spring.annotation.Test3";
@@ -66,6 +44,26 @@ class TestContextServiceScannerParser {
 			System.out.println("MR:" + e);
 			
 			assertEquals("com.crossbridge.kernel.spring.annotation.ContextServiceScannerParser",e.targetName());
+		}
+		
+		
+		
+	}
+	@Test
+	void testTwoReference() throws ClassNotFoundException {
+		String clsName="com.crossbridge.kernel.spring.annotation.Test4";
+		
+		Class<?> x = this.getClass().getClassLoader().loadClass(clsName);
+		
+		ExtendedAnnotationScanner scanner= new ExtendedAnnotationScanner(new DefaultListableBeanFactory(), ModuleReference.class);
+		
+		Set<ModuleReference> y = scanner.listReferences(x);
+		
+		assertEquals(4,y.size());
+		
+		for(ModuleReference e:y) {
+			System.out.println("MR:" + e);
+						
 		}
 		
 		

@@ -32,14 +32,14 @@ import org.springframework.util.ReflectionUtils.FieldFilter;
 public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 
 	static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
-	private static final String resourcePattern = DEFAULT_RESOURCE_PATTERN;
-	private Class type = null;
+	private final String resourcePattern = DEFAULT_RESOURCE_PATTERN;
+	private Class<? extends Annotation> typeFiltered = null;
 	
 	
 	
 	public ExtendedAnnotationScanner(BeanDefinitionRegistry registry,Class<? extends Annotation> type) {
 		super(registry,false); //don't use the default filters
-		this.type=type;
+		this.typeFiltered=type;
 		registerTypeFilter();
 	}
 	
@@ -62,14 +62,18 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 	 * @param basePackage the package to check for annotated classes
 	 * @return a corresponding Set of autodetected bean definitions
 	 */
-	public Set<BeanDefinition> findReferences(String basePackage) {
-		Set<BeanDefinition> candidates = new LinkedHashSet<BeanDefinition>();
+	public Set<ModuleReference> findReferenceAnnotations(String basePackage) {
+		return findAnnotations(basePackage,ModuleReference.class);
+	}
+
+
+	protected <T extends Annotation> Set<T> findAnnotations(String basePackage, Class<T> annoType) {
+		Set<T> candidates = new LinkedHashSet<T>();
 		try {
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + "/" + this.resourcePattern;
 			Resource[] resources = ((ResourcePatternResolver)this.getResourceLoader()).getResources(packageSearchPath);
 			boolean traceEnabled = logger.isTraceEnabled();
-			boolean debugEnabled = logger.isDebugEnabled();
 			for (Resource resource : resources) {
 				if (traceEnabled) {
 					logger.trace("Scanning " + resource);
@@ -79,35 +83,16 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 						
 						MetadataReader reader = this.getMetadataReader(resource);
 						String className = reader.getClassMetadata().getClassName();
-						Class bundleclass = this.getResourceLoader().getClassLoader().loadClass(className);
+						Class<?> bundleclass = this.getResourceLoader().getClassLoader().loadClass(className);
 						
 						
-						Set<ModuleReference> moduleRefs = listReferences(bundleclass);
+						Set<T> moduleRefs = listReferencesFields(bundleclass,annoType);
 						
-						
-						/*
-						if (isCandidateComponent(metadataReader)) {
-							
-							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
-							sbd.setResource(resource);
-							sbd.setSource(resource);
-							if (isCandidateComponent(sbd)) {
-								if (debugEnabled) {
-									logger.debug("Identified candidate component class: " + resource);
-								}
-								candidates.add(sbd);
-							}
-							else {
-								if (debugEnabled) {
-									logger.debug("Ignored because not a concrete top-level class: " + resource);
-								}
-							}
+						if(!moduleRefs.isEmpty()) {
+							candidates.addAll(moduleRefs);
 						}
-						else {
-							if (traceEnabled) {
-								logger.trace("Ignored because not matching any filter: " + resource);
-							}
-						}*/
+						
+						
 					}
 					catch (Throwable ex) {
 						throw new BeanDefinitionStoreException(
@@ -127,9 +112,9 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 		return candidates;
 	}
 
-
-	public Set<ModuleReference> listReferences(Class bundleclass) {
-		Set<ModuleReference>  moduleRefs = new LinkedHashSet<ModuleReference>();
+	public <T extends Annotation> Set<T> listReferencesFields( Class<?> bundleclass,Class<T> annotation) {
+		
+		Set<T>  moduleRefs = new LinkedHashSet<T>();
 		//FieldFilter ff;
 		//retrieve all fields with the specified annotation 
 		ReflectionUtils.doWithFields(bundleclass, new FieldCallback() {
@@ -137,7 +122,7 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 			@Override
 			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
 				// TODO Auto-generated method stub
-				ModuleReference ref = field.getAnnotation(ModuleReference.class);
+				 T ref = field.getAnnotation(annotation);
 				//reader.g
 				Assert.notNull(ref);
 				moduleRefs.add(ref);
@@ -149,11 +134,17 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 
 			@Override
 			public boolean matches(Field field) {
-				ModuleReference ref = field.getAnnotation(ModuleReference.class);
+				T ref = field.getAnnotation(annotation);
 				return ref!=null;
 			}});
 		return moduleRefs;
 	}
+	@SuppressWarnings("rawtypes")
+	public Set<ModuleReference> listReferences(Class bundleclass) {
+		return listReferencesFields(bundleclass,ModuleReference.class );
+	}
+	
+
 
 	private MetadataReader getMetadataReader(Resource resource) {
 		// TODO Auto-generated method stub
@@ -162,7 +153,7 @@ public class ExtendedAnnotationScanner extends ClassPathBeanDefinitionScanner {
 
 
 	private void registerTypeFilter(){
-        addIncludeFilter(new AnnotationTypeFilter(type));
+        addIncludeFilter(new AnnotationTypeFilter(typeFiltered));
      }
 
 }
