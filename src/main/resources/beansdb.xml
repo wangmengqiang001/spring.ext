@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="myDataSource"
+		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName"
+			value="org.hsqldb.jdbcDriver" />
+		<!-- property name="url" value="jdbc:hsqldb:hsql://localhost:9001"/ -->
+		<property name="url"
+			value="jdbc:hsqldb:file:/c:/temp/hsqldb/mydb" />
+
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+	</bean>
+
+	<bean id="mySessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="myDataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>News.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+
+		</property>
+	</bean>
+
+	<bean id="myannotationSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="myDataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>News.hbm.xml</value>
+			</list>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.crossbridge.kernel.dba.bean.Forum</value>
+				<value>com.crossbridge.kernel.dba.bean.Topic</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+
+		</property>
+	</bean>
+
+	<bean id="hibernateTemplate"
+		class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory"
+			ref="myannotationSessionFactory"></property>
+	</bean>
+
+	<bean id="newsDao" class="com.crossbridge.kernel.dba.NewsDaoImp">
+		<!-- <property name="sessionFactory" ref="mySessionFactory"></property> -->
+		<property name="sessionFactory"
+			ref="myannotationSessionFactory"></property>
+	</bean>
+
+	<bean id="newsDaoTmpl"
+		class="com.crossbridge.kernel.dba.NewsDaoTmpl">
+		<!-- <property name="sessionFactory" ref="mySessionFactory"></property> -->
+		<property name="hibernateTemplate" ref="hibernateTemplate"></property>
+	</bean>
+
+	<bean id="forumTmpl" class="com.crossbridge.kernel.dba.ForumDaoImp">
+		<!-- <property name="sessionFactory" ref="mySessionFactory"></property> -->
+		<property name="sessionFactory"
+			ref="myannotationSessionFactory"></property>
+	</bean>
+	
+	<bean id="topicDao"
+		class="com.crossbridge.kernel.dba.TopicDaoImp">
+		<!-- <property name="sessionFactory" ref="mySessionFactory"></property> -->
+		<property name="hibernateTemplate" ref="hibernateTemplate"></property>
+	</bean>
+
+</beans>
