@@ -2,6 +2,8 @@ package com.crossbridge.kernel.dba;
 
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.crossbridge.kernel.dba.bean.Topic;
@@ -9,6 +11,8 @@ import com.crossbridge.kernel.dba.bean.Topic;
 
 public class TopicDaoImp implements TopicDao {
 	
+	@Autowired(required=true)
+	@Qualifier(value="hibernateTemplate")
 	private HibernateTemplate hibernateTemplate;
 	
 
@@ -19,12 +23,7 @@ public class TopicDaoImp implements TopicDao {
 		return hibernateTemplate;
 	}
 
-	/**
-	 * @param hibernateTemplate the hibernateTemplate to set
-	 */
-	public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
-		this.hibernateTemplate = hibernateTemplate;
-	}
+	
 
 	@Override
 	public void add(Topic a) {

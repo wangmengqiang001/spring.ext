@@ -5,6 +5,9 @@
          http://www.springframework.org/schema/beans
          http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+<!-- 	<context:component-scan base-package=""/> -->
+	 <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>  
+	
 	<bean id="myDataSource"
 		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName"
@@ -86,7 +89,7 @@
 	<bean id="topicDao"
 		class="com.crossbridge.kernel.dba.TopicDaoImp">
 		<!-- <property name="sessionFactory" ref="mySessionFactory"></property> -->
-		<property name="hibernateTemplate" ref="hibernateTemplate"></property>
+<!-- 		<property name="hibernateTemplate" ref="hibernateTemplate"></property> -->
 	</bean>
 
 </beans>
