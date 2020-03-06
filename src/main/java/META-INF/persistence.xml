@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+    http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"    
+    version="2.0">
+<!-- <persistence version="2.1" -->
+<!-- 	xmlns="http://xmlns.jcp.org/xml/ns/persistence" -->
+<!-- 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" -->
+<!-- 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence  -->
+<!-- 	http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"> -->
+
+	<!-- 配置持久化单元 可以制定多个持久化单元，但名称不可重复，name用于指定持久化单元名称 transaction-type：指定事务的类型 
+		RESCOURCE_LOCAL:指的是本地代码事务 -->
+	<persistence-unit name="myJPAUnit" transaction-type="RESOURCE_LOCAL">	
+		<!-- JPA规范的提供商 可以不写 -->
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<!-- 指定由JPA注解的实体类位置 可以不写 -->
+		<class>com.crossbridge.kernel.dba.bean.Topic</class>
+		<class>com.crossbridge.kernel.dba.bean.Forum</class>
+		<!-- 连接数据库相关的一些配置，都是Hibernate的，所以只需要把之前Hibernate配置文件中的内容拷贝过来即可 -->
+		<properties>
+			<property name="hibernate.dialect"
+				value="org.hibernate.dialect.HSQLDialect" />
+			<property name="hibernate.connection.driver_class"
+				value="org.hsqldb.jdbcDriver" />
+			<property name="hibernate.connection.url"
+				value="jdbc:hsqldb:file:/c:/temp/hsqldb/mydb" />
+			<property name="hibernate.connection.username" value="sa" />
+			<property name="hibernate.connection.password" value="" />
+			<!-- Hibernate显示SQL语句 -->
+			<property name="hibernate.show_sql" value="true" />
+			<!-- Hibernate格式化SQL语句 -->
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.connection.provider_class"
+				value="org.hibernate.connection.C3P0ConnectionProvider" />
+			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
+			<property name="javax.persistence.jdbc.user" value="sa"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:/c:/temp/hsqldb/mydb"/>
+		</properties>
+	</persistence-unit>
+</persistence>
