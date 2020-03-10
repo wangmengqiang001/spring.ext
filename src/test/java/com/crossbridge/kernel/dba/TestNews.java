@@ -26,6 +26,10 @@ class TestNews {
 	@AfterEach
 	void tearDown() throws Exception {
 	}
+	
+
+	
+	
 /**
  * 测试案例：直接通过sessionFactory 进行数据库的操作 
  * 
@@ -111,6 +115,50 @@ class TestNews {
 			assertTrue(false);
 		}
 	}
+	/**
+	 * 测试: 通过继承HibernateDaoSuppoort 与注入hibernateTemplate访问数据库	
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	@Test
+	void testNewsDaoSupportTmplate() {
+
+		try {
+			ApplicationContext applicationContext = new
+					ClassPathXmlApplicationContext("classpath:beansdb.xml");
+
+			NewsDao sf  = (NewsDao)applicationContext.getBean("newsDaoSupportTmpl");
+
+
+			assertNotNull(sf);
+			final int maxCount = 10;
+			for(int n = 0; n< maxCount; n++) {
+				//sf.add(news);
+				News news = new News();
+				//news.setId(100+1);
+				news.setTitle("标题e ");
+				news.setContant("这是内容");
+				news.setCreatedate(new Date());
+				sf.add(news);
+			}
+
+			Collection<News> list = sf.loadNews();
+			//assertEquals(maxCount,list.size());
+			assertTrue(list.size()>= maxCount);
+
+			for(News n: list) {
+				System.out.println(n);
+			}
+
+		} catch (BeansException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
 	
 	/**
 	 * 测试: 通过HibernateTemplate 访问数据库	

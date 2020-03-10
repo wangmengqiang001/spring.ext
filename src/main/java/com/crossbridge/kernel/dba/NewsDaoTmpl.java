@@ -6,6 +6,13 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.crossbridge.kernel.dba.bean.News;
 
+/**
+ * It access db via hibernateTemplate
+ * 
+ * 
+ *
+ */
+
 public class NewsDaoTmpl implements NewsDao {
 	
 	private HibernateTemplate hibernateTemplate=null;

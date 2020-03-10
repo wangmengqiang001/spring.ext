@@ -79,6 +79,12 @@
 		<!-- <property name="sessionFactory" ref="mySessionFactory"></property> -->
 		<property name="hibernateTemplate" ref="hibernateTemplate"></property>
 	</bean>
+	
+	<bean id="newsDaoSupportTmpl"
+		class="com.crossbridge.kernel.dba.NewsDaoImpSupport">
+		<property name="sessionFactory" ref="mySessionFactory"></property>
+<!-- 		<property name="hibernateTemplate" ref="hibernateTemplate"></property> -->
+	</bean>
 
 	<bean id="forumTmpl" class="com.crossbridge.kernel.dba.ForumDaoImp">
 		<!-- <property name="sessionFactory" ref="mySessionFactory"></property> -->
@@ -91,5 +97,6 @@
 		<!-- <property name="sessionFactory" ref="mySessionFactory"></property> -->
 <!-- 		<property name="hibernateTemplate" ref="hibernateTemplate"></property> -->
 	</bean>
+
 
 </beans>

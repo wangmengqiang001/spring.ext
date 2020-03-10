@@ -10,6 +10,12 @@ import org.hibernate.Transaction;
 
 import com.crossbridge.kernel.dba.bean.News;
 
+/**
+ * It access db via sessionfactory 
+ * 
+ * 
+ * 
+ * */
 public class NewsDaoImp implements NewsDao {
 
 	private SessionFactory sessionFactory=null;
