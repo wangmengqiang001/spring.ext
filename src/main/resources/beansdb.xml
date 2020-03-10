@@ -99,4 +99,12 @@
 	</bean>
 
 
+
+    <bean id="myEmf" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="myJPAUnit"/>
+    </bean>
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+    <bean id="newsdaoJpa" class="com.crossbridge.kernel.dba.NewsDaoJPAImp"> </bean>
+
+
 </beans>
